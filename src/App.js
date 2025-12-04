@@ -1,23 +1,101 @@
-import logo from './logo.svg';
+//css
 import './App.css';
+//react
+import { useCallback, useEffect, useState } from 'react';
+
+//data
+import { wordsList } from './data/words';
+
+//components
+import StartScreen from "./components/StartScreen";
+import Game from './components/Game';
+import GameOver from './components/GameOver';
+
+const stages = [
+  { id: 1, name: "start" },
+  { id: 2, name: "game" },
+  { id: 3, name: "end" },
+];
+
 
 function App() {
+  const [gameStage, setGameStage] = useState(stages[0].name);
+  const [words] = useState(wordsList);
+
+  const [pickedword, setPickedword] = useState("")
+  const [pickedCategory, setPickedCategory] = useState("")
+  const [letters, setLetters] = useState([]);
+
+  const [guessedLetters, setGuessedLetters] = useState([])
+  const [wrongLetters, setWrongLetters] = useState([])
+  const [guesses, setGuesses] = useState(3)
+  const [score, getScore] = useState(0)
+
+
+
+
+
+
+  const pickwordAndCategory = () => {
+    //pick a random category
+    const categories = Object.keys(words)
+    const category = categories[Math.floor(Math.random() * Object.keys(categories).length)];
+
+    console.log(category);
+    // pick a random word
+    const word = words[category][Math.floor(Math.random() * words[category].length)]
+    console.log(word);
+
+    return { word, category }
+  };
+
+  //starts the secret word game
+    const startGame = () => {
+    const { category, word } = pickwordAndCategory();
+
+    console.log(category, word);
+
+    let wordLetters = word.split("");
+
+    wordLetters = wordLetters.map((l) => l.toLowerCase());
+
+
+
+    //console.log(word, category);
+
+
+    //fill  states
+    setPickedword(word);
+    setPickedCategory(category);
+    setLetters(wordLetters);
+
+
+    setGameStage(stages[1].name)
+
+  };
+
+  //process the letter input
+  const verifyLetter = () => {
+    setGameStage(stages[2].name);
+  };
+
+  //restarts the game
+  const retry = () => (
+    setGameStage(stages[0].name)
+  )
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      {gameStage === 'start' && <StartScreen startGame={startGame} />}
+      {gameStage === 'game' && <Game verifyLetter={verifyLetter} 
+      pickedword={pickedword} 
+      pickedCategory={pickedCategory}
+      letters={letters}
+      guessedLetters={guessedLetters}
+      wrongLetters={wrongLetters}
+      guesses={guesses}
+      score={score} />}
+      {gameStage === 'end' && <GameOver retry={retry} />}
     </div>
   );
 }
