@@ -38,7 +38,7 @@ function App() {
 
 
 
-  const pickwordAndCategory = () => {
+  const pickwordAndCategory =  useCallback(() => {
     //pick a random category
     const categories = Object.keys(words)
     const category = categories[Math.floor(Math.random() * Object.keys(categories).length)];
@@ -49,10 +49,12 @@ function App() {
     console.log(word);
 
     return { word, category }
-  };
+  },[words]);
 
   //starts the secret word game
-    const startGame = () => {
+    const startGame = useCallback(() => {
+      clearLetterStates();
+
     const { category, word } = pickwordAndCategory();
 
     console.log(category, word);
@@ -74,7 +76,7 @@ function App() {
 
     setGameStage(stages[1].name)
 
-  };
+  },[pickwordAndCategory]);
 
   //process the letter input
   const verifyLetter = (letter) => {
@@ -123,10 +125,15 @@ if
 
   //check win condition
   useEffect(()=>{
-    
-    const uniqueLetters = [...new Set(letters)]
 
-  },[guessedLetters])
+    const uniqueLetters = [...new Set(letters)]
+    if(guessedLetters.length=== uniqueLetters.length){
+      //add score
+      setScore((actualScore)=> actualScore += 100)
+      //restart game with new word
+      startGame();
+    }
+  },[guessedLetters,letters,startGame])
  
 
   //restarts the game
