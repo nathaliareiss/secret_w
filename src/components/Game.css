@@ -6,12 +6,12 @@
     font-weight: bold;
 }
 .tip span{
-    color:#ecfa00
+    color:#fa00fa
 }
 .wordContainer{
     margin: 1em;
     padding: 1.em;
-    border: 20px solid #ecfa00;
+    border: 20px solid #fa00d0;
     display: flex;
 }
 
@@ -42,7 +42,7 @@
     font-size: 2em;
     text-align: center;
     margin-right: 1em;
-    
+
 
 }
 
